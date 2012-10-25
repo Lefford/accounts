@@ -1,3 +1,7 @@
 Django==1.4.2
+South==0.7.6
 argparse==1.2.1
+httplib2==0.7.6
+ipython==0.13.1
+-e git://github.com/Lefford/restclient.git@52610080ab8a0d2a03d123dedc64bed6cbcb1b3a#egg=restclient-dev
 wsgiref==0.1.2
