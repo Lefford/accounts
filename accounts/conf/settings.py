@@ -1,8 +1,8 @@
 # Django settings for accounts project.
 import os
 
-PROJECT_PATH = os.path.join(os.path.abspath(__file__), os.pardir)
-ROOT_PATH = os.path.join(PROJECT_PATH, os.pardir)
+PROJECT_PATH = os.path.abspath(os.path.join(os.path.abspath(__file__), os.pardir))
+ROOT_PATH = os.path.abspath(os.path.join(PROJECT_PATH, os.pardir))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -125,7 +125,7 @@ INSTALLED_APPS = (
     'accounts.account',
     'accounts.importer',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
