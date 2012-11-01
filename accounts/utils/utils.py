@@ -57,7 +57,6 @@ def create_fields(**args):
     return [{k, MODEL_FIELD[type(v)]} for k, v in args.items()]
 
 def url_join(*args):
-    SCHEMA = u'http://'
-    return os.path.join(SCHEMA, args)
+    return os.path.join(*args)
     
     
