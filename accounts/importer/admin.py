@@ -1,5 +1,5 @@
 from django.contrib import admin
-from accounts.importer.models import Account
+from accounts.importer.models import Account, Person
 from accounts.importer.forms import AccountForm
 from django.contrib.admin.options import IncorrectLookupParameters
 from django.core.exceptions import PermissionDenied
@@ -19,13 +19,11 @@ class AdminAccount(admin.ModelAdmin):
     form = AccountForm
     client = None
     
-    exclude = ('resource_uri',)
-    
     def save_model(self, request, obj, form, change):
         # instead to save the obj to base it's stored on the partner
         uri = None
         if change:
-            uri = obj.resource_uri
+            uri = obj.resource_uri[1:]
         else:
             uri = ''.join(['api/v1/account_lead', '/'])
         client = self.get_client()
@@ -43,12 +41,14 @@ class AdminAccount(admin.ModelAdmin):
             message = u'The account "{0}" was {1} {2}'.format(''.join([obj.first_name, obj.last_name]), 'changed' if change else 'created', 'successfully')
         self.message_user(request, message)
         
+        return super(AdminAccount, self).save_model(request, obj, form, change)
+        
     def get_client(self):
         if not self.client: 
             self.client = ImporterClient(
                                     'http://api.travelbird.info', 
                                     {'username': 'guest@travelbird.nl',
-                                     'api_key': '642bbb7c573da61cc3cd3461e46eef84e8467185',
+                                     'api_key':  '4fcd19b96bb11f2bc2395b1cb767b2c102fd4acb', #'642bbb7c573da61cc3cd3461e46eef84e8467185',
                                      'format': 'json'
                                  })
         return self.client
@@ -101,9 +101,10 @@ class AdminAccount(admin.ModelAdmin):
         except ValueError, e:
             pass
         
-        content = response.content if response.status_code <= 304 else list()
-        obj = self.set_account(content)
-        
+        status_code = response.status_code if response else 500
+        obj = None
+        if status_code <= 304:
+            obj = self.set_account(response.content)
 
         if not self.has_change_permission(request, obj):
             raise PermissionDenied
@@ -243,14 +244,16 @@ class AdminAccount(admin.ModelAdmin):
             response = client.get('api/v1/account_lead/')
         except ValueError, e:
             pass
-        
-        content = response.content['objects'] if response.status_code == 200 else list()
+        print response.status_code
+        status_code = response.status_code if response else 500
+        content = response.content['objects'] if status_code == 200 else list()
         for account in content:
             query_set.append(self.set_account(account))
             
-        cl.root_query_set = query_set
+        # add remote and local accounts
+        cl.root_query_set = query_set 
         cl.query_set = query_set
-        cl.result_list = query_set
+        cl.result_list = query_set 
         
         action_failed = False
         selected = request.POST.getlist(helpers.ACTION_CHECKBOX_NAME)
@@ -362,3 +365,4 @@ class AdminAccount(admin.ModelAdmin):
 
 
 admin.site.register(Account, AdminAccount)
+admin.site.register(Person)

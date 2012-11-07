@@ -206,7 +206,7 @@ def items_for_result(cl, result, form):
         yield mark_safe(u'<td>%s</td>' % force_unicode(form[cl.model._meta.pk.name]))
 
 
-@register.inclusion_tag("admin/importer/account/change_list_results.html")
+@register.inclusion_tag("admin/change_list_results.html")
 def result_list(cl):
     """
     Displays the headers and data list together

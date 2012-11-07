@@ -53,7 +53,7 @@
 
 <div class="container">
     <div class="row">
-        <h1>Overview accounts</h1> <div class="pull-right"><input placeholder="Search account" type="search"></div>
+        <h1>Overview accounts</h1> <div class="pull-right"><input id="id_search_account" placeholder="Search account" type="search"></div>
     </div>
     <div class="row">
         <div>
@@ -74,20 +74,22 @@
                     <th>Mailing</th>
                 </tr>
                 <tbody>
-                <tr>
-                    <td>Lefford</td>
-                    <td>Girigori</td>
-                    <td>27-04-1992</td>
-                    <td>Geen enne moer</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
-                    <td>Iets wat zolang is</td>
+                <tr id="account_rows">
+                	{% for account in object_list %}
+                    	<td>{{account.first_name}}</td>
+                        <td>{{account.last_name}}</td>
+                    	<td>{{account.birth_day}}</td>
+                    	<td>{{account.street_name}}</td>
+                    	<td>{{account.zipcode}}</td>
+                    	<td>{{account.country}}</td>
+                    	<td>{{account.gender}}</td>
+                    	<td>{{account.city}}</td>
+                    	<td>{{account.lead}}</td>
+	                    <td>{{account.mailing_list}}</td>
+			            <td>{{account.phone}}</td>
+                    	<td>{{account.email}}</td>
+                    	<td>{{Mailing}}</td>
+                    {% endfor %}
                 </tr>
                 </tbody>
                 <tfoot>
@@ -105,7 +107,7 @@
                     <h3>Add account</h3>
                 </div>
                 <div class="modal-body">
-                    {% include "snippet/stacked-form.html" with form=account_form %}
+                	{% include "snippet/stacked-form.html" with form=account_form %}
                 </div>
                 <div class="modal-footer"><a class="btn" href="#" data-dismiss="modal">Cancel</a>
                     <input id="addAccount" class="btn btn-primary" type="submit" value="Save" />
@@ -118,20 +120,11 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="{{ STATIC_URL }}js/bootstrap/jquery.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-transition.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-alert.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-modal.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-dropdown.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-scrollspy.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-tab.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-tooltip.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-popover.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-button.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-collapse.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-carousel.js"></script>
-<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-typeahead.js"></script>
+<script src="{{ STATIC_URL }}js/jquery.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-modal.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap-typeahead.js"></script>
 <script>
+ (function() {
     $('#addAccount').click(addAccount);
 
     function getCookie(name) {
@@ -149,7 +142,45 @@
         }
         return cookieValue;
     }
-
+    
+     $("#id_search_account").typeahead({
+        //minLength: 3,
+        //items: 10,
+        source: function(query, process){
+            return $.ajax({
+                    url: "{%  url search_account 'example' %}",
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {'q': query},
+                    success: function(data){
+                        var accountList = data['account_set'];
+                        if( accountList.length > 0 ) {
+                        	var accountRow = [];
+                        	$.each(function(account){
+                        		accountRow.push(
+                        			'<td>'+account.first_name+'</td>'+
+                        			'<td>'+account.last_name+'</td>'+
+                    				'<td>'+account.birth_day+'</td>'+
+                    				'<td>'+account.street_name+'</td>'+
+                    				'<td>'+account.zipcode+'</td>'+
+                    				'<td>'+account.country+'</td>'+
+                    				'<td>'+account.gender+'</td>'+
+                    				'<td>'+account.city+'</td>'+
+                    				'<td>'+account.lead+'</td>'+
+	                    			'<td>'+account.mailing_list+'</td>'+
+			                    	'<td>'+account.phone+'</td>'+
+                    				'<td>'+account.email+'</td>'+
+                    				'<td>'+Mailing+'</td>'
+                    			);
+                        	});
+                        	$('#account_rows').empty();
+                        	//$('#account_rows').appendTo(accountRow.toString());
+                        }
+                    }
+                })
+        }
+    });
+    
     function addAccount(event){
         event.preventDefault();
         var data = $("#account_form").serialize();
@@ -166,6 +197,7 @@
             }
         })
     }
+})();
 </script>
 </body>
 </html>

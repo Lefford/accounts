@@ -1,7 +1,10 @@
 from django.conf.urls import patterns, include, url
-
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from accounts.api.resource import AccountResource, PersonResource
+
+account_resource = AccountResource()
+person_resource = PersonResource()
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -14,4 +17,6 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^overview/', include('accounts.importer.urls')),
+    url(r'^data/', include(person_resource.urls)),
 )
