@@ -236,7 +236,6 @@ class AdminAccount(admin.ModelAdmin):
         
         # we need to replace the query_set, root_query_set and reinvoke the get_result on the cl object
         query_set = list()
-        
         client = self.get_client()
         
         response = None
@@ -244,16 +243,18 @@ class AdminAccount(admin.ModelAdmin):
             response = client.get('api/v1/account_lead/')
         except ValueError, e:
             pass
-        print response.status_code
+        
+        print cl.root_query_set
         status_code = response.status_code if response else 500
         content = response.content['objects'] if status_code == 200 else list()
         for account in content:
             query_set.append(self.set_account(account))
-            
+        # concatnated remote and local account 
+        query_set = query_set + list(cl.root_query_set)
         # add remote and local accounts
-        cl.root_query_set = query_set 
+        cl.root_query_set = query_set
         cl.query_set = query_set
-        cl.result_list = query_set 
+        cl.result_list = query_set
         
         action_failed = False
         selected = request.POST.getlist(helpers.ACTION_CHECKBOX_NAME)
