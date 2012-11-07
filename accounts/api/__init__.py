@@ -1,0 +1,1 @@
+from accounts.api.resource import *
