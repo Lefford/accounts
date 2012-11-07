@@ -22,7 +22,13 @@ from django.contrib.admin.templatetags.admin_list import _boolean_icon
 register = template.Library()
 
 def url_for_result(cl, result):
-    uri = "%s" % mark_safe(getattr(result, 'resource_uri'))[1:]
+    obj_id = None
+    try:
+        obj_id = getattr(result, 'resource_uri')
+    except AttributeError:
+        obj_id = getattr(result, 'id')
+        
+    uri = "%s" % mark_safe(obj_id)[1:]
     return uri
 
 class ResultList(list):
