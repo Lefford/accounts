@@ -105,10 +105,3 @@ class PersonResource(CommonResource):
         list_view_fields = list(list_view_fields)
         list_view_fields.append('first_name')
         return list_view_fields
-        
-    def fields_list_view(self):
-        list_view_fields = super(PersonResource, self).fields_list_view()
-        list_view_fields = list(list_view_fields)
-        list_view_fields.append('first_name')
-        return list_view_fields
-    
