@@ -1,11 +1,14 @@
 import json
-
 from django.views.generic import ListView
 from accounts.importer.models import Account
 from django.views.generic.base import View
 from django.http import HttpResponse
 from accounts.importer.forms import AccountForm
 from django.core.cache import cache
+from django.forms.models import model_to_dict
+from django.views.generic.edit import FormView
+from django.core.urlresolvers import reverse_lazy
+import datetime
 
 
 class AccountList(ListView):
@@ -18,19 +21,29 @@ class AccountList(ListView):
         # get remote data
         return context
     
-class CreateAccount(View):
-    pass
-
 class JSONResponseMixin(object):
 
     response_class = HttpResponse
 
-    def render_to_response(self, context, **kwargs):
+    def render_to_response(self, context=[], **kwargs):
         kwargs["content_type"] = "application/json"
         return JSONResponseMixin.response_class(self.convert_to_json(context), **kwargs)
 
     def convert_to_json(self, context):
-        return json.dumps(context)
+        dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else ''
+        return json.dumps(context, default=dthandler)
+    
+class CreateAccount(JSONResponseMixin, FormView):
+    
+    success_url = reverse_lazy('search_account', kwargs={'website': 'example'})
+    
+    form_class = AccountForm
+    
+    def form_valid(self, form):
+        form.save()
+        if self.request.is_ajax():
+            return JSONResponseMixin.render_to_response(self)
+        return super(CreateAccount, self).form_valid(form)
 
 class AccountLookup(JSONResponseMixin, View):
 
@@ -46,7 +59,7 @@ class AccountLookup(JSONResponseMixin, View):
             if not cache_result:
                 account_list[q] = Account.objects.filter(first_name__startswith=q)
                 cache_result = account_list[q]
-            convert_result = [account for account in cache_result]
+            convert_result = [model_to_dict(account) for account in cache_result]
             result = {
                 "account_set": convert_result
             }
