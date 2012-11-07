@@ -57,7 +57,8 @@
     </div>
     <div class="row">
         <div>
-            <table class="table table-striped">
+            <table id="account-table" class="table table-striped">
+            	<thead>
                 <tr>
                     <th>Name</th>
                     <th>Sure name</th>
@@ -65,32 +66,31 @@
                     <th>Street name</th>
                     <th>Zip code</th>
                     <th>Country</th>
-                    <th>Subject A</th>
-                    <th>Subject B</th>
-                    <th>Subject C</th>
-                    <th>Subject D</th>
-                    <th>Subject E</th>
-                    <th>Subject G</th>
-                    <th>Mailing</th>
+                    <th>Gender</th>
+                    <th>City</th>
+                    <th>Lead</th>
+                    <th>Mailing list</th>
+                    <th>Phone</th>
+                    <th>E-mail</th>
                 </tr>
+                </thead>
                 <tbody>
-                <tr id="account_rows">
-                	{% for account in object_list %}
-                    	<td>{{account.first_name}}</td>
-                        <td>{{account.last_name}}</td>
-                    	<td>{{account.birth_day}}</td>
-                    	<td>{{account.street_name}}</td>
-                    	<td>{{account.zipcode}}</td>
-                    	<td>{{account.country}}</td>
-                    	<td>{{account.gender}}</td>
-                    	<td>{{account.city}}</td>
-                    	<td>{{account.lead}}</td>
-	                    <td>{{account.mailing_list}}</td>
-			            <td>{{account.phone}}</td>
-                    	<td>{{account.email}}</td>
-                    	<td>{{Mailing}}</td>
-                    {% endfor %}
-                </tr>
+                {% for account in object_list %}
+                	<tr class="account_rows">
+                    	<td>{% if account.first_name %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                        <td>{% if account.last_name %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.birth_day %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.street_name %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.zipcode%}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.country%}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.gender %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.city %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.lead %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+	                    <td>{% if account.mailing_list %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+			            <td>{% if account.phone %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                    	<td>{% if account.email %}{{ account.last_name}}{%else%}Geen data{% endif %}</td>
+                	</tr>
+                {% endfor %}
                 </tbody>
                 <tfoot>
                     <tr>
@@ -144,8 +144,8 @@
     }
     
      $("#id_search_account").typeahead({
-        //minLength: 3,
-        //items: 10,
+        minLength: 3,
+        items: 10,
         source: function(query, process){
             return $.ajax({
                     url: "{%  url search_account 'example' %}",
@@ -153,28 +153,27 @@
                     dataType: 'json',
                     data: {'q': query},
                     success: function(data){
-                        var accountList = data['account_set'];
-                        if( accountList.length > 0 ) {
+                        if( data['account_set'].length > 0 ) {
                         	var accountRow = [];
-                        	$.each(function(account){
+                        	$.each(data['account_set'], function(index, account){
+                        	console.log(account);
                         		accountRow.push(
-                        			'<td>'+account.first_name+'</td>'+
-                        			'<td>'+account.last_name+'</td>'+
-                    				'<td>'+account.birth_day+'</td>'+
-                    				'<td>'+account.street_name+'</td>'+
-                    				'<td>'+account.zipcode+'</td>'+
-                    				'<td>'+account.country+'</td>'+
-                    				'<td>'+account.gender+'</td>'+
-                    				'<td>'+account.city+'</td>'+
-                    				'<td>'+account.lead+'</td>'+
-	                    			'<td>'+account.mailing_list+'</td>'+
-			                    	'<td>'+account.phone+'</td>'+
-                    				'<td>'+account.email+'</td>'+
-                    				'<td>'+Mailing+'</td>'
+                        			'<tr><td>'+account['first_name']+'</td>'+
+                        			'<td>'+account['last_name']+'</td>'+
+                    				'<td>'+account['birth_day']+'</td>'+
+                    				'<td>'+account['street_name']+'</td>'+
+                    				'<td>'+account['zipcode']+'</td>'+
+                    				'<td>'+account['country']+'</td>'+
+                    				'<td>'+account['gender']+'</td>'+
+                    				'<td>'+account['city']+'</td>'+
+                    				'<td>'+account['lead']+'</td>'+
+	                    			'<td>'+account['mailing_list']+'</td>'+
+			                    	'<td>'+account['phone']+'</td>'+
+                    				'<td>'+account['email']+'</td></tr>'
                     			);
                         	});
-                        	$('#account_rows').empty();
-                        	//$('#account_rows').appendTo(accountRow.toString());
+                        	$('#account-table tbody').empty();
+                        	$('#account-table tbody').append(accountRow.toString());
                         }
                     }
                 })
