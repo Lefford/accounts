@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Bootstrap, from Twitter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+
+    </style>
+    <link href="{{ STATIC_URL }}css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <link rel="shortcut icon" href="{{ STATIC_URL }}/bootstrap/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}/bootstrap/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}/bootstrap/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}/bootstrap/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{ STATIC_URL }}/bootstrap/ico/apple-touch-icon-57-precomposed.png">
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="#">Project name</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active"><a href="#">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <h1>Overview accounts</h1> <div class="pull-right"><input placeholder="Search account" type="search"></div>
+    </div>
+    <div class="row">
+        <div>
+            <table class="table table-striped">
+                <tr>
+                    <th>Name</th>
+                    <th>Sure name</th>
+                    <th>Birth day</th>
+                    <th>Street name</th>
+                    <th>Zip code</th>
+                    <th>Country</th>
+                    <th>Subject A</th>
+                    <th>Subject B</th>
+                    <th>Subject C</th>
+                    <th>Subject D</th>
+                    <th>Subject E</th>
+                    <th>Subject G</th>
+                    <th>Mailing</th>
+                </tr>
+                <tbody>
+                <tr>
+                    <td>Lefford</td>
+                    <td>Girigori</td>
+                    <td>27-04-1992</td>
+                    <td>Geen enne moer</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                    <td>Iets wat zolang is</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3"><a class="btn btn-primary" href="#account_modal" data-toggle="modal" >Add account</a></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="">
+        <div id="account_modal" class="modal hide fade">
+            <form id="account_form" method="post">{% csrf_token %}
+                <div class="modal-header"><button class="close" data-dismiss="modal">×</button>
+                    <h3>Add account</h3>
+                </div>
+                <div class="modal-body">
+                    {% include "snippet/stacked-form.html" with form=account_form %}
+                </div>
+                <div class="modal-footer"><a class="btn" href="#" data-dismiss="modal">Cancel</a>
+                    <input id="addAccount" class="btn btn-primary" type="submit" value="Save" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div> <!-- /container -->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{{ STATIC_URL }}js/bootstrap/jquery.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-transition.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-alert.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-modal.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-dropdown.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-scrollspy.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-tab.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-tooltip.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-popover.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-button.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-collapse.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-carousel.js"></script>
+<script src="{{ STATIC_URL }}js/bootstrap/bootstrap-typeahead.js"></script>
+<script>
+    $('#addAccount').click(addAccount);
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function addAccount(event){
+        event.preventDefault();
+        var data = $("#account_form").serialize();
+        $.ajax({
+            headers: {"X-CSRFToken": getCookie('csrftoken')},
+            url: "{% url add_account 'website' %}",
+            type: "POST",
+            dataType: "json",
+            data: data,
+            success: function( data){
+                $("#account_modal").modal('hide');
+            },
+            error: function( data ){
+            }
+        })
+    }
+</script>
+</body>
+</html>
