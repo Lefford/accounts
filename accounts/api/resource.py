@@ -75,13 +75,21 @@ class CommonResource(ModelResource):
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)$" % (self._meta.resource_name), self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
         ]
     
-class AccountResource(ModelResource):
+class AccountResource(CommonResource):
     
     class Meta:
         queryset = Account.objects.all()
         fields =['first_name',]
         resource_name = 'account_lead'
-        allowed_methods = ['get', 'post']
+        allowed_methods = ['get', 'post', 'put']
+        authentication = BasicAuthentication()
+        authorization = DjangoAuthorization()
+        
+    def fields_list_view(self):
+        list_view_fields = super(PersonResource, self).fields_list_view()
+        list_view_fields = list(list_view_fields)
+        list_view_fields.append('first_name')
+        return list_view_fields
     
 class PersonResource(CommonResource):
     
@@ -91,6 +99,12 @@ class PersonResource(CommonResource):
         list_allowed_methods = ['get', 'post', 'put']
         authentication = BasicAuthentication()
         authorization = DjangoAuthorization()
+        
+    def fields_list_view(self):
+        list_view_fields = super(PersonResource, self).fields_list_view()
+        list_view_fields = list(list_view_fields)
+        list_view_fields.append('first_name')
+        return list_view_fields
         
     def fields_list_view(self):
         list_view_fields = super(PersonResource, self).fields_list_view()
